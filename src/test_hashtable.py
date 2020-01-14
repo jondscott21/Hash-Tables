@@ -191,7 +191,16 @@ class TestHashTable(unittest.TestCase):
         self.assertTrue(return_value == "val-8")
         return_value = ht.retrieve("key-9")
         self.assertTrue(return_value == "val-9")
+        self.assertTrue(len(ht.storage) == 16)
 
+        ht.remove("key-3")
+        ht.remove("key-4")
+        ht.remove("key-5")
+        ht.remove("key-6")
+        ht.remove("key-7")
+        ht.remove("key-8")
+        ht.remove("key-9")
+        self.assertTrue(len(ht.storage) == 8)
 
 if __name__ == '__main__':
     unittest.main()

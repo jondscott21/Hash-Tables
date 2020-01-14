@@ -17,6 +17,7 @@ class HashTable:
         self.storage = [None] * capacity
         self.count = 0
         self.resized = False
+        self.resizing = False
 
 
     def _hash(self, key):
@@ -46,6 +47,7 @@ class HashTable:
         within the storage capacity of the hash table.
         '''
         return self._hash_djb2(key) % self.capacity
+        # return hash(key) % self.capacity
 
 
     def insert(self, key, value):
@@ -133,28 +135,33 @@ class HashTable:
         '''
         load_factor = self.count / self.capacity
         print(load_factor)
-        new_cap = 0
-        if load_factor > 0.7:
+        new_cap = self.capacity
+        if load_factor > 0.7 and self.resizing is False:
             new_cap = self.capacity * 2
             self.resized = True
-        elif load_factor < 0.2 and self.resized is True:
+        elif load_factor < 0.2 and self.resized is True and self.resizing is False:
             new_cap = self.capacity / 2
         else:
             return
-        self.capacity = new_cap
+        self.capacity = int(new_cap)
         new_storage = [None] * self.capacity
-        count = 0
+        index = 0
+        self.count = 0
+        self.resizing = True
         for n in self.storage:
             if n is not None:
                 cur = n
                 while cur is not None:
-                    new_storage[count] = cur
+                    new_storage[index] = cur
                     cur = cur.next
-                    count += 1
+                    index += 1
         self.storage = [None] * self.capacity
         for n in new_storage:
             if n is not None:
                 self.insert(n.key, n.value)
+        print(self.capacity)
+        self.resizing = False
+        
         
 
 # if __name__ == "__main__":
@@ -185,21 +192,21 @@ class HashTable:
 
 #     print("")
 
-ht1 = HashTable(9)
-ht1.insert('bob', 1)
-print(ht1.storage)
-ht1.insert('fred', 2)
-print(ht1.storage)
-ht1.insert('sally', 3)
-print(ht1.storage)
-ht1.insert('ashley', 4)
-print(ht1.storage)
-ht1.insert('sam', 5)
-print(ht1.storage)
-ht1.insert('jed', 6)
-print(ht1.storage)
-ht1.insert('tom', 7)
-print(ht1.storage)
+# ht1 = HashTable(9)
+# ht1.insert('bob', 1)
+# print(ht1.storage)
+# ht1.insert('fred', 2)
+# print(ht1.storage)
+# ht1.insert('sally', 3)
+# print(ht1.storage)
+# ht1.insert('ashley', 4)
+# print(ht1.storage)
+# ht1.insert('sam', 5)
+# print(ht1.storage)
+# ht1.insert('jed', 6)
+# print(ht1.storage)
+# ht1.insert('tom', 7)
+# print(ht1.storage)
 # ht1.remove('bob')
 # print(ht1.storage)
 # print(ht1.retrieve('fred'))
