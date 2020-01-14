@@ -15,6 +15,8 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
+        self.count = 0
+        self.resized = False
 
 
     def _hash(self, key):
@@ -57,6 +59,8 @@ class HashTable:
         hash_index = self._hash_mod(key)
         if self.storage[hash_index] is None:
             self.storage[hash_index] = LinkedPair(key, value)
+            self.count += 1
+            self.resize()
         else:
             current = self.storage[hash_index]
             while current is not None:
@@ -65,6 +69,8 @@ class HashTable:
                     return current.value
                 elif current.next is None:
                     current.next = LinkedPair(key, value)
+                    self.count += 1
+                    self.resize()
                     return current.next.value
                 else:
                     current = current.next
@@ -88,6 +94,8 @@ class HashTable:
                     prev_node.next = current.next
                 else:
                     self.storage[hash_index] = current.next
+                self.count -= 1
+                self.resize()
                 return None
             elif current.next is not None:
                 prev_node = current
@@ -95,9 +103,6 @@ class HashTable:
             else:
                 print('SOMETHING IS WRONG')
         return None
-        # hash_index = self._hash_mod(key)
-        # self.storage[hash_index] = None
-
 
     def retrieve(self, key):
         '''
@@ -126,7 +131,17 @@ class HashTable:
 
         Fill this in.
         '''
-        self.capacity = self.capacity * 2
+        load_factor = self.count / self.capacity
+        print(load_factor)
+        new_cap = 0
+        if load_factor > 0.7:
+            new_cap = self.capacity * 2
+            self.resized = True
+        elif load_factor < 0.2 and self.resized is True:
+            new_cap = self.capacity / 2
+        else:
+            return
+        self.capacity = new_cap
         new_storage = [None] * self.capacity
         count = 0
         for n in self.storage:
@@ -140,6 +155,7 @@ class HashTable:
         for n in new_storage:
             if n is not None:
                 self.insert(n.key, n.value)
+        
 
 # if __name__ == "__main__":
 #     ht = HashTable(2)
@@ -169,22 +185,27 @@ class HashTable:
 
 #     print("")
 
-ht1 = HashTable(20)
+ht1 = HashTable(9)
 ht1.insert('bob', 1)
+print(ht1.storage)
 ht1.insert('fred', 2)
+print(ht1.storage)
 ht1.insert('sally', 3)
+print(ht1.storage)
 ht1.insert('ashley', 4)
+print(ht1.storage)
 ht1.insert('sam', 5)
+print(ht1.storage)
 ht1.insert('jed', 6)
+print(ht1.storage)
 ht1.insert('tom', 7)
 print(ht1.storage)
-ht1.remove('bob')
-print(ht1.storage)
-print(ht1.retrieve('fred'))
-ht1.resize()
-print(ht1.storage)
-print(ht1.retrieve('fred'))
-for l in ht1.storage:
-    if l is not None:
-        print(l)
-        print(l.next)
+# ht1.remove('bob')
+# print(ht1.storage)
+# print(ht1.retrieve('fred'))
+# print(ht1.storage)
+# print(ht1.retrieve('fred'))
+# for l in ht1.storage:
+#     if l is not None:
+#         print(l)
+#         print(l.next)
