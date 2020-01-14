@@ -51,7 +51,20 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        hash_index = self._hash_mod(key)
+        if self.storage[hash_index] is None:
+            self.storage[hash_index] = LinkedPair(key, value)
+        else:
+            current = self.storage[hash_index]
+            while current is not None:
+                if current.key == key:
+                    current.value = value
+                    return current.value
+                elif current.next is None:
+                    current.next = LinkedPair(key, value)
+                    return current.next.value
+                else:
+                    current = current.next
 
 
 
@@ -63,7 +76,24 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        hash_index = self._hash_mod(key)
+        current = self.storage[hash_index]
+        prev_node = None
+        while current is not None:
+            if current.key == key:
+                if prev_node is not None:
+                    prev_node.next = current.next
+                else:
+                    self.storage[hash_index] = current.next
+                return None
+            elif current.next is not None:
+                prev_node = current
+                current = current.next
+            else:
+                print('SOMETHING IS WRONG')
+        return None
+        # hash_index = self._hash_mod(key)
+        # self.storage[hash_index] = None
 
 
     def retrieve(self, key):
@@ -74,7 +104,16 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        hash_index = self._hash_mod(key)
+        if self.storage[hash_index] is not None:
+            current = self.storage[hash_index]
+            while current is not None:
+                if current.key == key:
+                    return current.value
+                current = current.next
+            return None
+        else:
+            return None
 
 
     def resize(self):
@@ -84,34 +123,65 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        new_storage = [None] * self.capacity
+        self.capacity = self.capacity * 2
+        count = 0
+        for n in self.storage:
+            if n is not None:
+                cur = n
+                while cur is not None:
+                    print(count)
+                    new_storage[count] = cur
+                    cur = cur.next
+                    count += 1
+        for n in new_storage:
+            hashed_index = self._hash_mod(n.key)
+            self.storage[hashed_index] = n
 
+# if __name__ == "__main__":
+#     ht = HashTable(2)
 
+#     ht.insert("line_1", "Tiny hash table")
+#     ht.insert("line_2", "Filled beyond capacity")
+#     ht.insert("line_3", "Linked list saves the day!")
 
-if __name__ == "__main__":
-    ht = HashTable(2)
+#     print("")
 
-    ht.insert("line_1", "Tiny hash table")
-    ht.insert("line_2", "Filled beyond capacity")
-    ht.insert("line_3", "Linked list saves the day!")
+#     # Test storing beyond capacity
+#     print(ht.retrieve("line_1"))
+#     print(ht.retrieve("line_2"))
+#     print(ht.retrieve("line_3"))
 
-    print("")
+#     # Test resizing
+#     old_capacity = len(ht.storage)
+#     ht.resize()
+#     new_capacity = len(ht.storage)
 
-    # Test storing beyond capacity
-    print(ht.retrieve("line_1"))
-    print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
+#     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
-    # Test resizing
-    old_capacity = len(ht.storage)
-    ht.resize()
-    new_capacity = len(ht.storage)
+#     # Test if data intact after resizing
+#     print(ht.retrieve("line_1"))
+#     print(ht.retrieve("line_2"))
+#     print(ht.retrieve("line_3"))
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+#     print("")
 
-    # Test if data intact after resizing
-    print(ht.retrieve("line_1"))
-    print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
-
-    print("")
+# ht1 = HashTable(20)
+# ht1.insert('bob', 1)
+# ht1.insert('fred', 2)
+# ht1.insert('sally', 3)
+# ht1.insert('ashley', 4)
+# ht1.insert('sam', 5)
+# ht1.insert('jed', 6)
+# ht1.insert('tom', 7)
+# print(ht1.storage)
+# ht1.remove('bob')
+# print(ht1.storage)
+# print(ht1.retrieve('fred'))
+# ht1.resize()
+# print(ht1.storage)
+# print(ht1.retrieve('fred'))
+# for l in ht1.storage:
+#     if l is not None:
+#         print(l)
+#         print(l.next)
