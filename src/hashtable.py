@@ -32,7 +32,10 @@ class HashTable:
 
         OPTIONAL STRETCH: Research and implement DJB2
         '''
-        pass
+        djb2_hash = 5381
+        for char in key:
+            djb2_hash = djb2_hash * 33 + ord(char)
+        return djb2_hash
 
 
     def _hash_mod(self, key):
@@ -40,7 +43,7 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         within the storage capacity of the hash table.
         '''
-        return self._hash(key) % self.capacity
+        return self._hash_djb2(key) % self.capacity
 
 
     def insert(self, key, value):
@@ -166,22 +169,22 @@ class HashTable:
 
 #     print("")
 
-# ht1 = HashTable(20)
-# ht1.insert('bob', 1)
-# ht1.insert('fred', 2)
-# ht1.insert('sally', 3)
-# ht1.insert('ashley', 4)
-# ht1.insert('sam', 5)
-# ht1.insert('jed', 6)
-# ht1.insert('tom', 7)
-# print(ht1.storage)
-# ht1.remove('bob')
-# print(ht1.storage)
-# print(ht1.retrieve('fred'))
-# ht1.resize()
-# print(ht1.storage)
-# print(ht1.retrieve('fred'))
-# for l in ht1.storage:
-#     if l is not None:
-#         print(l)
-#         print(l.next)
+ht1 = HashTable(20)
+ht1.insert('bob', 1)
+ht1.insert('fred', 2)
+ht1.insert('sally', 3)
+ht1.insert('ashley', 4)
+ht1.insert('sam', 5)
+ht1.insert('jed', 6)
+ht1.insert('tom', 7)
+print(ht1.storage)
+ht1.remove('bob')
+print(ht1.storage)
+print(ht1.retrieve('fred'))
+ht1.resize()
+print(ht1.storage)
+print(ht1.retrieve('fred'))
+for l in ht1.storage:
+    if l is not None:
+        print(l)
+        print(l.next)
