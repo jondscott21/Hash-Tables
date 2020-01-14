@@ -123,20 +123,20 @@ class HashTable:
 
         Fill this in.
         '''
-        new_storage = [None] * self.capacity
         self.capacity = self.capacity * 2
+        new_storage = [None] * self.capacity
         count = 0
         for n in self.storage:
             if n is not None:
                 cur = n
                 while cur is not None:
-                    print(count)
                     new_storage[count] = cur
                     cur = cur.next
                     count += 1
+        self.storage = [None] * self.capacity
         for n in new_storage:
-            hashed_index = self._hash_mod(n.key)
-            self.storage[hashed_index] = n
+            if n is not None:
+                self.insert(n.key, n.value)
 
 # if __name__ == "__main__":
 #     ht = HashTable(2)
